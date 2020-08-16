@@ -36,10 +36,48 @@ int main(int argc, char **argv)
 }
 /*
 
-emcc -O3 -s   \
+emcc -O3    \
     -s EXTRA_EXPORTED_RUNTIME_METHODS='["cwrap","ccall"]' \
     -s EXPORTED_FUNCTIONS='["_main","_fibArray","_fib"]' \
     -s ALLOW_MEMORY_GROWTH \
-     fibArray.cpp
+    -s ENVIRONMENT='web' \
+    fibArray.cpp
+
+
+emcc -O3   \
+    -s WASM=1 \
+    -s EXTRA_EXPORTED_RUNTIME_METHODS='["cwrap","ccall"]' \
+    -s EXPORTED_FUNCTIONS='["_main","_fibArray","_fib"]' \
+    -s ALLOW_MEMORY_GROWTH \
+    -s ENVIRONMENT='web' \
+    -s EXPORT_ES6=1 \
+    -s MODULARIZE=1 \
+    -s STRICT=1 \
+    -o fibArray.js \
+    --bind \
+    fibArray.cpp
+
+
+
+
+
+emcc -O3   \
+    -s WASM=1 \
+    -s EXTRA_EXPORTED_RUNTIME_METHODS='["cwrap","ccall"]' \
+    -s EXPORTED_FUNCTIONS='["_main","_fibArray","_fib"]' \
+    -s ALLOW_MEMORY_GROWTH \
+    -o fibArray.js \
+    -s STRICT=1 \
+    --bind \
+    fibArray.cpp
+
+emcc -O3   \
+    -s WASM=1 \
+    -s EXTRA_EXPORTED_RUNTIME_METHODS='["cwrap","ccall"]' \
+    -s EXPORTED_FUNCTIONS='["_main","_fibArray","_fib"]' \
+    -s ALLOW_MEMORY_GROWTH \
+    -s ENVIRONMENT='web' \
+    -o fibArray.js \
+    fibArray.cpp
 
 */

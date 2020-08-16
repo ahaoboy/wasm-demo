@@ -1,11 +1,12 @@
 <template>
   <div>
-    <div>
+    <fib />
+    <!-- <div>
       <ImageJs  :imageUrl='imageUrlRef'/>
     </div>
     <div>
       <ImageWasm :imageUrl='imageUrlRef' />
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -13,9 +14,10 @@
 import ImageJs from "./components/ImageJS";
 import ImageWasm from "./components/ImageWasm";
 import imageUrl from "./images/t-big2.png";
+import fib from "./components/fib";
 import {ref} from 'vue'
 
-const components = { ImageJs, ImageWasm };
+const components = { ImageJs, ImageWasm ,fib};
 export default {
   components,
   setup() {

@@ -101,6 +101,7 @@ emcc -O3 -s   \
     -s EXTRA_EXPORTED_RUNTIME_METHODS='["cwrap","ccall"]' \
     -s EXPORTED_FUNCTIONS='["_main","_fillWasm"]' \
     -s ALLOW_MEMORY_GROWTH \
+    -s EXPORT_ES6=1 \
      fillWasm.cpp
 
 */
