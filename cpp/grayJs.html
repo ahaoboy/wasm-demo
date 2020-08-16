@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+  </head>
+  <body>
+    <img src="./t.jpg" id="input" alt="" />
+  </body>
+
+  <script>
+    const grayJs = (data, w, h) => {
+      const size = w * h;
+      for (let i = 0; i < size; i++) {
+        const j = i * 4;
+        const g = ((data[j] + data[j + 1] + data[j + 2]) / 3) | 0;
+        // const g = Number((data[j] + data[j + 1] + data[j + 2]) / 3)
+        data[j] = data[j + 1] = data[j + 2] = g;
+      }
+    };
+    const input = document.getElementById("input");
+    const canvas = document.createElement("canvas");
+    const output = document.createElement("canvas");
+    const test = () => {
+      const w = input.width;
+      const h = input.height;
+      canvas.width = output.width = w;
+      canvas.height = output.height = h;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(input, 0, 0);
+      document.body.append(canvas);
+
+      const imageData = ctx.getImageData(0, 0, w, h);
+      const i = new Uint8ClampedArray();
+      console.log(imageData);
+      imageData.data[0] = 0;
+      const st = +new Date();
+      grayJs(imageData.data, w, h);
+      console.log("time:", +new Date() - st, imageData.data.length);
+      console.log(imageData);
+      output.getContext("2d").putImageData(imageData, 0, 0);
+      document.body.append(output);
+    };
+
+    document.addEventListener("click", test);
+  </script>
+</html>

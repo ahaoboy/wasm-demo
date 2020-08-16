@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="./a.out.js"></script>
+  </head>
+  <body>
+    <img src="./t.jpg" id="input" alt="" />
+    <script>
+      let imageData;
+      let w;
+      let h;
+      const input = document.getElementById("input");
+      const canvas = document.createElement("canvas");
+      const output = document.createElement("canvas");
+      input.onload = () => {
+        w = input.width;
+        h = input.height;
+        canvas.width = output.width = w;
+        canvas.height = output.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(input, 0, 0);
+        document.body.append(canvas);
+        imageData = ctx.getImageData(0, 0, w, h);
+        // console.log("imageData", imageData.data.length);
+      };
+
+      Module.onRuntimeInitialized = () => {
+        console.log("===", imageData, w, h);
+        console.log("wasm", Module);
+      };
+
+      function test() {
+        const size = imageData.data.length;
+        const ccall = Module.ccall;
+        const numBytes = size * Uint8Array.BYTES_PER_ELEMENT;
+        // console.log("size", { size, numBytes, w, h });
+        const ptr = Module._malloc(numBytes);
+        const heapBytes = new Uint8Array(Module.HEAP8.buffer, ptr, numBytes);
+        const imageDataBuffer = Uint8Array.from(imageData.data);
+        // console.log("imageDataBuffer", imageDataBuffer);
+        heapBytes.set(new Uint8Array(imageDataBuffer));
+        const st = +new Date();
+        const resultPtr = ccall(
+          "grayCpp",
+          "Uint8Array",
+          ["Uint8Array", "number", "number"],
+          [heapBytes.byteOffset, w, h]
+        );
+        console.log("time:", +new Date() - st);
+        // console.log("resultPtr", resultPtr);
+        const resultArray = new Uint8Array(
+          Module.HEAP8.buffer,
+          resultPtr,
+          size
+        );
+        // console.log("resultArray", resultArray);
+        const result = new Uint8ClampedArray(resultArray);
+        // console.log("result", result.length);
+        const outputData = new ImageData(result, w, h);
+        output.getContext("2d").putImageData(outputData, 0, 0);
+        document.body.append(output);
+      }
+
+      document.addEventListener("click", test);
+    </script>
+  </body>
+</html>
